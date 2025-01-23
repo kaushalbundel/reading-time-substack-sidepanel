@@ -15,7 +15,13 @@
     "action": {
         "default_title": "Click to open Panel"
     },
-    "permissions": ["sidePanel", "tabs"],
+    "permissions": ["sidePanel", "activeTab", "scripting"],
+    "content-scripts": [
+        {
+            "matches": ["<all-urls>"],
+            "js": ["scripts/content.js"]
+        }
+    ],
     "commands": {
         "_execute_action": {
             "suggested_key": {
