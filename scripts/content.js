@@ -14,18 +14,14 @@ function readingTime() {
     // calculate reading time
     const readingTime = Math.round(wordLength / 200);
     // returning the reading time
-    const time = `📖 ${readingTime} mins read`;
-    return time;
+    return readingTime;
   }
-  return `📖 0 mins read`;
+  return 0;
 }
-
-// creating another function for displaying reading time
-
-function displayReadingTime() {
-  const time = readingTime();
-  const readingTimeElement = document.getElementById("reading-time");
-  readingTimeElement.textContent = time;
-}
-
-displayReadingTime();
+//the above output should be sent to sidepanel
+//type is basically the definition of the kind("type") of messages
+//time is essentially the data which is being sent
+chrome.runtime.sendMessage({
+  type: "READING_TIME",
+  time: readingTime(),
+});
