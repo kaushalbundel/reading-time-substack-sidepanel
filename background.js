@@ -13,6 +13,7 @@ chrome.action.onClicked.addListener((tab) => {
 // });
 
 //sending message from content script to the side panel
+// this api call transfers the "time to read" information by the content.js to the sidepanel.js
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "Reading_TIME") {
     chrome.runtime.sendMessage(message);

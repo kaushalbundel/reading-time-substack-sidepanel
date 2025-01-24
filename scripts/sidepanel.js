@@ -14,7 +14,7 @@ console.log("sidepanel script loaded");
 //   }
 // });
 
-// listen to message from the background scripts
+// listen to message from the background scripts and shows it on the side panel
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("side panel recieved message", message);
   if (message.type === "READING_TIME") {
