@@ -13,9 +13,12 @@
         "default_title": "Click to open Panel"
     },
     "permissions": ["sidePanel", "activeTab", "scripting"],
-    "content-scripts": [
+    "side_panel":{
+     "default_path": "sidepanel.html"
+    },
+    "content_scripts": [
         {
-            "matches": ["<all-urls>"],
+            "matches": ["<all_urls>"],
             "js": ["scripts/content.js"]
         }
     ],
