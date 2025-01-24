@@ -1,0 +1,13 @@
+body {
+padding: 20px;
+font-family: Arial, Helvetica, sans-serif;
+}
+
+#reading-time{
+    font-size: 18px;
+    color: #333;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+}
