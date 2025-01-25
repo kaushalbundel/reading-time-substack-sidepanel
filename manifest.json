@@ -12,7 +12,7 @@
     "action": {
         "default_title": "Click to open Panel"
     },
-    "permissions": ["sidePanel", "activeTab", "scripting"],
+    "permissions": ["sidePanel", "activeTab", "scripting", "storage", "clipboardWrite", "tabs"],
     "host_permissions": ["*://*.substack.com/*"],
     "side_panel":{
      "default_path": "sidepanel.html"
