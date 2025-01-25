@@ -11,3 +11,36 @@ font-family: Arial, Helvetica, sans-serif;
     background-color: #f5f5f5;
     border-radius: 4px;
 }
+
+#notes-section{
+    margin-top: 20px;
+}
+
+#notes-textarea{
+    width: 100%;
+    min-height: 200px;
+    margin: 10px 0px;
+    padding: 10px;
+    border: 1 px solid #ccc;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+#copy-button{
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#copy-button:hover{
+   background-color: #45a049; 
+}
+
+.copy-feedback{
+    color: #4CAF50;
+    margin-left: 10px;
+    display: none;
+}
