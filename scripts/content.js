@@ -44,15 +44,55 @@ function readingTime() {
 
 // instead of waiting for the message we now send it immediately
 function sendReadingTime() {
-  const time = readingTime();
-  chrome.runtime.sendMessage({
-    type: "READING_TIME",
-    time: time,
+  try {
+    const time = readingTime();
+    chrome.runtime
+      .sendMessage({
+        type: "READING_TIME",
+        time: time,
+        source: "content",
+        url: window.location.href, //so that if multiple windows have different substack open (with different reading times), the code will send only information for that specific url
+      })
+      .catch((error) => {
+        console.error("Error sending reading time", error);
+      });
+  } catch (error) {
+    console.error("Error in sending reading time:", error);
+  }
+}
+// this code does the following things
+// observes for any changes in the page structure (content loads) and then sends the reading time if there is a content load.
+// it also stops to send the reading time when the page unloads (ie. url is changed, chrome is shut down etc.)
+function initializeContentObserver() {
+  //sending reading time
+  sendReadingTime();
+
+  const observer = new MutationObserver((mutations) => {
+    if (window.readingTimeTimeout) {
+      clearTimeout(window.readingTimeTimeout);
+    }
+
+    window.readingTimeTimeout = setTimeout(() => {
+      sendReadingTime();
+    }, 1000);
+  });
+
+  //adding config files for the MutationObserver
+  const article = document.querySelector("article");
+  if (article) {
+    observer.observe(article, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+  }
+
+  window.addEventListener("unload", () => {
+    observer.disconnect();
+    if (window.readingTimeTimeout) {
+      clearTimeout(window.readingTimeTimeout);
+    }
   });
 }
 
-//running the function
-sendReadingTime();
-
-//sending the reading time periodically
-setInterval(sendReadingTime, 5000);
+initializeContentObserver();
