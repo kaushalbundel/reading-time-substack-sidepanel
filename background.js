@@ -3,12 +3,32 @@ chrome.action.onClicked.addListener((tab) => {
   chrome.sidePanel.open({ windowId: tab.windowId });
 });
 
-//sending message from content script to the side panel
+//storing reading times for multiple tabs
+const tabReadingTimes = new Map();
+// sending message from content script to the side panel
 // this api call transfers the "time to read" information by the content.js to the sidepanel.js
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === "Reading_TIME") {
-    chrome.runtime.sendMessage(message);
+  if (message.type === "Reading_TIME" && sender.tab) {
+    // storing reading times for a specific tab
+    tabReadingTimes.set(sender.tab.id, {
+      time: message.time,
+      url: message.url,
+    });
+
+    // forwarding the tab wise messages
+    chrome.runtime.sendMessage({
+      type: "READING_TIME",
+      time: message.time,
+      source: "background",
+      tabId: sender.tab.id,
+      url: message.url,
+    });
   }
+});
+
+//cleanup when the tabs are closed
+chrome.tabs.onRemoved.addListener((tabId) => {
+  tabReadingTimes.delete(tabId);
 });
 
 //side panel closing and opening on the basis of tab and url change
@@ -25,43 +45,26 @@ function isSubstackUrl(url) {
   return url && url.includes("substack.com");
 }
 
-// helper function to control side panel visibility
-async function managesSidepanel(tab) {
-  // start here
-  // If no tab or no url, close the side panel
-  if (!tab || !tab.url) {
-    await chrome.sidePanel.close();
-    return;
-  }
+//allows user to open the side panel by clicking on the action tool bar
+chrome.sidePanel
+  .setPanelBehavior({ openPanelOnActionClick: true })
+  .catch((error) => console.error(error));
 
-  //checking a substack url
-  if (isSubstackUrl(tab.url)) {
-    //open side panel
-    await chrome.sidePanel.open({ windowId: tab.windowId });
-  } else {
-    await chrome.sidePanel.close();
-  }
-}
-
-// executing on tab changes
-// listen for tab activation changes(when user switches tabs)
-chrome.tabs.onActivated.addListener(async (activeInfo) => {
-  //get new active tab
-  const tab = await chrome.tabs.get(activeInfo.tabId);
-  await managesSidepanel(tab);
-});
-
-//listening to url change when new tab is activated
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  //only act if url is changed and is the active tab
-  if (changeInfo.url) {
-    //check for active tab
-    const activeTabs = await chrome.tabs.query({
-      active: true,
-      currentWindow: true,
+chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
+  if (!tab.url) return;
+  const url = new URL(tab.url);
+  //enabling side panel
+  if (url.orgin.includes("substack.com")) {
+    await chrome.sidePanel.setOptions({
+      tabId,
+      path: "sidepanel.html",
+      enabled: true,
     });
-    if (activeTabs[0].id === tabId) {
-      await managesSidepanel(tab);
-    }
+  } else {
+    //disables side panel
+    await chrome.sidePanel.setOptions({
+      tabId,
+      enabled: false,
+    });
   }
 });
