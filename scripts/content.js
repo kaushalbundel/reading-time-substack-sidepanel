@@ -1,5 +1,4 @@
 // creating a function that generates the reading time of the article
-
 function readingTime() {
   const article = document.querySelector("article");
   if (article) {
@@ -42,10 +41,11 @@ function readingTime() {
 
 // Claude suggestion
 
-// instead of waiting for the message we now send it immediately
+// instead of waiting for the message we now send it immediately when the tab changes for the specific tab where user has arrived
 async function sendReadingTime() {
   try {
     const time = readingTime();
+    console.log("calculated reading time", time);
     chrome.runtime
       .sendMessage({
         type: "READING_TIME",
@@ -60,6 +60,14 @@ async function sendReadingTime() {
     console.error("Error in sending reading time:", error);
   }
 }
+
+//sending reading time when first the substack page opens and then the extension gets loaded
+//concerning ISSUE: Reading time is on the refresh not when the extension is activated on the substack page
+window.addEventListener("calculateReadingTime", () => {
+  console.log("manual reading time calculation triggered");
+  sendReadingTime();
+});
+
 // this code does the following things
 // observes for any changes in the page structure (content loads) and then sends the reading time if there is a content load.
 // it also stops to send the reading time when the page unloads (ie. url is changed, chrome is shut down etc.)
@@ -87,6 +95,7 @@ function initializeContentObserver() {
     });
   }
 
+  //cleanup on page reload
   window.addEventListener("unload", () => {
     observer.disconnect();
     if (window.readingTimeTimeout) {
@@ -95,4 +104,5 @@ function initializeContentObserver() {
   });
 }
 
+//start the observer
 initializeContentObserver();

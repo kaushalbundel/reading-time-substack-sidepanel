@@ -1,6 +1,20 @@
-//opens the side panel manually
-chrome.action.onClicked.addListener((tab) => {
+//opens the side panel manually and triggering the event to populate the reading time
+chrome.action.onClicked.addListener(async (tab) => {
   chrome.sidePanel.open({ windowId: tab.windowId });
+
+  // if substack url then immediately trigger the reading time
+  if (isSubstackUrl(tab.url)) {
+    try {
+      await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => {
+          window.dispatchEvent(new CustomEvent("CalculateReadingTime"));
+        },
+      });
+    } catch (error) {
+      console.log("Error triggering time calculations: ", error);
+    }
+  }
 });
 
 //storing reading times for multiple tabs
@@ -24,7 +38,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       tabId: sender.tab.id,
       url: message.url,
     });
+
+    sendResponse({ received: true });
   }
+  return false;
 });
 
 //cleanup when the tabs are closed
