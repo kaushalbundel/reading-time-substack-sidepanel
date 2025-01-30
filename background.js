@@ -8,7 +8,8 @@ const tabReadingTimes = new Map();
 // sending message from content script to the side panel
 // this api call transfers the "time to read" information by the content.js to the sidepanel.js
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === "Reading_TIME" && sender.tab) {
+  console.log("Background message received", message);
+  if (message.type === "READING_TIME" && sender.tab) {
     // storing reading times for a specific tab
     tabReadingTimes.set(sender.tab.id, {
       time: message.time,
@@ -42,7 +43,12 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 // Monitoring tab change
 // helper function to check if a url is a substack url
 function isSubstackUrl(url) {
-  return url && url.includes("substack.com");
+  try {
+    const urlObj = new URL(url);
+    return urlObj.hostname.includes("substack.com");
+  } catch {
+    return false;
+  }
 }
 
 //allows user to open the side panel by clicking on the action tool bar
@@ -50,15 +56,19 @@ chrome.sidePanel
   .setPanelBehavior({ openPanelOnActionClick: true })
   .catch((error) => console.error(error));
 
-chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
-  if (!tab.url) return;
-  const url = new URL(tab.url);
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  if (changeInfo.status === "complete") return;
   //enabling side panel
-  if (url.orgin.includes("substack.com")) {
+  if (isSubstackUrl(tab.url)) {
     await chrome.sidePanel.setOptions({
       tabId,
       path: "sidepanel.html",
       enabled: true,
+    });
+    //inject content script
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      files: ["scripts/content.js"],
     });
   } else {
     //disables side panel
@@ -66,5 +76,25 @@ chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
       tabId,
       enabled: false,
     });
+  }
+});
+
+// handle tab activation changes
+chrome.tabs.onActivated.addListener(async (activeInfo) => {
+  try {
+    const tab = await chrome.tabs.get(activeInfo.tabId);
+    if (isSubstackUrl(tab.url)) {
+      // get stored reading time for this specific tab
+      const readingTimeData = tabReadingTimes.get(activeInfo.tabId);
+      if (readingTimeData) {
+        chrome.runtime.sendMessage({
+          type: "READING_TIME",
+          ...readingTimeData,
+          source: "background",
+        });
+      }
+    }
+  } catch (error) {
+    console.error("error handling tab activation", error);
   }
 });

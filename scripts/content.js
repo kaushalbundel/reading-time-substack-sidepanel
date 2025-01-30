@@ -43,7 +43,7 @@ function readingTime() {
 // Claude suggestion
 
 // instead of waiting for the message we now send it immediately
-function sendReadingTime() {
+async function sendReadingTime() {
   try {
     const time = readingTime();
     chrome.runtime
