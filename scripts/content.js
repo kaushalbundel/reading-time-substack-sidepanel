@@ -26,13 +26,13 @@ function readingTime() {
   if (!article) {
     console.warn("No <article> tags found on the page");
   }
-  const articleText = article.textContent();
+  const articleText = article.textContent;
   //optimized approach removing regex earlier and introducing built-in js methods
   const words = articleText
     .trim()
     .replace(/\s+/g, " ")
     .split(" ")
-    .fliter((word) => word.length > 0);
+    .filter((word) => word.length > 0);
   const wordCount = words.length;
   const readingTime = Math.round(wordCount / 200);
   return readingTime;
