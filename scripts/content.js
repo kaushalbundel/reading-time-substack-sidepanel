@@ -93,7 +93,7 @@ function initializeContentObserver() {
   }
 
   //cleanup on page reload
-  window.addEventListener("unload", () => {
+  window.addEventListener("pagehide", () => {
     observer.disconnect();
     if (window.readingTimeTimeout) {
       clearTimeout(window.readingTimeTimeout);
