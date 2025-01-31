@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
     "name": "Substack Reading Assistant",
-    "version": "1.0",
-    "description": "Enhance the reading experience on Substack",
+    "version": "0.0.0.1",
+    "description": "Track Reading time and take notes on substack",
     "icons": {
         "16": "images/icon-16.png",
         "32": "images/icon-32.png",
@@ -12,10 +12,17 @@
     "action": {
         "default_title": "Click to open Panel"
     },
-    "permissions": ["sidePanel", "activeTab", "scripting", "storage", "clipboardWrite", "tabs"],
+    "permissions": [
+        "sidePanel",
+        "activeTab",
+        "scripting",
+        "storage",
+        "clipboardWrite",
+        "tabs"
+    ],
     "host_permissions": ["*://*.substack.com/*"],
-    "side_panel":{
-     "default_path": "sidepanel.html"
+    "side_panel": {
+        "default_path": "sidepanel.html"
     },
     "background": {
         "service_worker": "background.js"
