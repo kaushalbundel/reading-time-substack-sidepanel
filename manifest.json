@@ -20,7 +20,7 @@
         "clipboardWrite",
         "tabs"
     ],
-    "host_permissions": ["*://*.substack.com/*"],
+    "host_permissions": ["<all_urls>"],
     "side_panel": {
         "default_path": "sidepanel.html"
     },
@@ -29,7 +29,7 @@
     },
     "content_scripts": [
         {
-            "matches": ["*://*.substack.com/*"],
+            "matches": ["<all_urls>"],
             "js": ["scripts/content.js"]
         }
     ],

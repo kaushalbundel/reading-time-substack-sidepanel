@@ -103,3 +103,7 @@ function initializeContentObserver() {
 
 //start the observer
 initializeContentObserver();
+
+document.addEventListener("DOMContentLoaded", () => {
+  sendReadingTime();
+});

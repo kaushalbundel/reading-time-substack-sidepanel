@@ -3,22 +3,31 @@
   <head>
     <meta charset="utf-8" />
     <title>Substack Reading Assistant</title>
-    <link rel="stylesheet" href="stylesheet.css">
+    <link rel="stylesheet" href="stylesheet.css" />
   </head>
   <body>
     <h1>Substack Reading Assistant</h1>
-    <p id="reading-quote">The more that you read, the more things you will know. The more that you learn, the more places you’ll go.</p>
-    <div id="reading-time">Calculating reading time...</div>
-
-    <div id="notes-section"> 
-   <h2> Notes </h2> 
-   <textarea name="notes-textarea" id="notes-textarea" placeholder="Write your notes here"></textarea>
-   <div>
-   <button id="copy-button"> Copy Notes </button>
-   <span id="copy-feedback" class="copy-feedback">Copied!</span>
-   </div>
+    <p id="reading-quote">
+      The more that you read, the more things you will know. The more that you
+      learn, the more places you’ll go.
+    </p>
+    <div id="reading-time" style="display: none">
+      Calculating reading time...
     </div>
 
-  <script src="scripts/sidepanel.js"></script>
+    <div id="notes-section">
+      <h2>Notes</h2>
+      <textarea
+        name="notes-textarea"
+        id="notes-textarea"
+        placeholder="Write your notes here"
+      ></textarea>
+      <div>
+        <button id="copy-button">Copy Notes</button>
+        <span id="copy-feedback" class="copy-feedback">Copied!</span>
+      </div>
+    </div>
+
+    <script src="scripts/sidepanel.js"></script>
   </body>
 </html>

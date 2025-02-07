@@ -1,5 +1,6 @@
 //storing the current tab url
 let currentTabId = "";
+let currentUrl = "";
 
 //initialize notes from chrome storage as the panel opens
 document.addEventListener("DOMContentLoaded", async () => {
@@ -22,7 +23,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // listen for tab changes
 chrome.tabs.onActivated.addListener(async (activeInfo) => {
-  currentTabId = activeInfo.TabId;
+  try {
+    currentTabId = activeInfo.tabId;
+    const tab = await chrome.tabs.get(activeInfo.tabId);
+    currentUrl = tab.url;
+  } catch (error) {
+    console.error("error handling tab activation", error);
+  }
 });
 
 // listen to message from the background scripts and shows it on the side panel
@@ -32,7 +39,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (
       message.type === "READING_TIME" &&
       message.source === "background" &&
-      message.tabId === currentTabId
+      (!message.tabId || message.tabId === currentTabId)
     ) {
       const timeElement = document.getElementById("reading-time");
       if (timeElement) {

@@ -73,29 +73,47 @@ chrome.sidePanel
   .setPanelBehavior({ openPanelOnActionClick: true })
   .catch((error) => console.error(error));
 
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-  if (changeInfo.status === "complete") return;
-  //enabling side panel
-  if (isSubstackUrl(tab.url)) {
-    await chrome.sidePanel.setOptions({
-      tabId,
-      path: "sidepanel.html",
-      enabled: true,
-    });
-    //inject content script
-    await chrome.scripting.executeScript({
-      target: { tabId },
-      files: ["scripts/content.js"],
-    });
-  } else {
-    //disables side panel
-    await chrome.sidePanel.setOptions({
-      tabId,
-      enabled: false,
-    });
-  }
-});
+// Future: Removing the substack specific functionality, to be checked in future versions
+// reason: I was not able to get the reading time function properly and I wanted to expand to functionality to all websites not just substack
+// chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+//   if (!tab.url || changeInfo.status !== "complete") return;
+//   //enabling side panel
+//   if (isSubstackUrl(tab.url)) {
+//     await chrome.sidePanel.setOptions({
+//       tabId,
+//       path: "sidepanel.html",
+//       enabled: true,
+//     });
+//     //inject content script
+//     await chrome.scripting.executeScript({
+//       target: { tabId },
+//       files: ["scripts/content.js"],
+//     });
+//   } else {
+//     //disables side panel
+//     await chrome.sidePanel.setOptions({
+//       tabId,
+//       enabled: false,
+//     });
+//   }
+// });
 
+//enabling side panel for all websites
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  if (!tab.url | (changeInfo.status !== "complete")) return;
+
+  await chrome.sidePanel.setOptions({
+    tabId,
+    path: "sidepanel.html",
+    enabled: true,
+  });
+
+  //inject content script
+  await chrome.scripting.executeScript({
+    target: { tabId },
+    files: ["scripts/content.js"],
+  });
+});
 // handle tab activation changes
 chrome.tabs.onActivated.addListener(async (activeInfo) => {
   try {
