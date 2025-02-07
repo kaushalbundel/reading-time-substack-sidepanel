@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "Substack Reading Assistant",
+    "name": "Helpful Reading Assistant",
     "version": "0.0.0.1",
-    "description": "Track Reading time and take notes on substack",
+    "description": "Your Reading Companion to help consume and retain written content.",
     "icons": {
         "16": "images/icon-16.png",
         "32": "images/icon-32.png",
