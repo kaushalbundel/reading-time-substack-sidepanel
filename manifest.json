@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "Helpful Reading Assistant",
+    "name": "MarginScribe",
     "version": "0.0.0.1",
-    "description": "Your Reading Companion to help consume and retain written content.",
+    "description": "Your digital companion for seamless web reading and note-taking.",
     "icons": {
         "16": "images/icon-16.png",
         "32": "images/icon-32.png",
