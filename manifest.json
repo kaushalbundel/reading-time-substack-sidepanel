@@ -9,17 +9,13 @@
     "48": "images/icon-48.png",
     "128": "images/icon-128.png"
   },
-  "action": {
-    "default_title": "Click to open Panel"
-  },
   "permissions": [
     "sidePanel",
     "activeTab",
     "scripting",
     "storage",
     "clipboardWrite",
-    "tabs",
-    "action"
+    "tabs"
   ],
   "host_permissions": ["<all_urls>"],
   "side_panel": {
