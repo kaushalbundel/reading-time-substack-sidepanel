@@ -32,27 +32,6 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
   }
 });
 
-// listen to message from the background scripts and shows it on the side panel
-// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-//   try {
-//     console.log("side panel recieved message", message);
-//     if (
-//       message.type === "READING_TIME" &&
-//       message.source === "background" &&
-//       (!message.tabId || message.tabId === currentTabId)
-//     ) {
-//       const timeElement = document.getElementById("reading-time");
-//       if (timeElement) {
-//         timeElement.textContent = `Reading time: ${message.time} mins`;
-//       } else {
-//         console.error("reading time not found in the side panel");
-//       }
-//     }
-//   } catch (error) {
-//     console.error("error processing message", error);
-//   }
-// });
-
 //save notes as they are typed
 const notesTextArea = document.getElementById("notes-textarea");
 notesTextArea.addEventListener("input", async (e) => {
